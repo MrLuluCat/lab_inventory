@@ -4,24 +4,22 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-return new class extends Migration
+class CreatePenempatanBarangsTable extends Migration
 {
-    /**
-     * Run the migrations.
-     */
-    public function up(): void
+    public function up()
     {
-        Schema::create('penempatan_barangs', function (Blueprint $table) {
+        Schema::create('penempatan_barang', function (Blueprint $table) {
             $table->id();
+            $table->foreignId('id_detail_barang')->constrained('detail_barang');
+            $table->foreignId('id_ruangan')->constrained('ruangan');
+            $table->string('pc_no');
+            $table->date('tanggal_penempatan');
             $table->timestamps();
         });
     }
 
-    /**
-     * Reverse the migrations.
-     */
-    public function down(): void
+    public function down()
     {
-        Schema::dropIfExists('penempatan_barangs');
+        Schema::dropIfExists('penempatan_barang');
     }
-};
+}

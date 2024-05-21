@@ -4,24 +4,24 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-return new class extends Migration
+class CreateDetailBarangsTable extends Migration
 {
-    /**
-     * Run the migrations.
-     */
-    public function up(): void
+    public function up()
     {
-        Schema::create('detail_barangs', function (Blueprint $table) {
+        Schema::create('detail_barang', function (Blueprint $table) {
             $table->id();
+            $table->foreignId('no_surat')->constrained('surat_masuk');
+            $table->foreignId('id_jenis_barang')->constrained('barang');
+            $table->string('merek');
+            $table->string('kode_inventaris')->unique();
+            $table->string('kondisi');
+            $table->foreignId('lokasi')->constrained('ruangan');
             $table->timestamps();
         });
     }
 
-    /**
-     * Reverse the migrations.
-     */
-    public function down(): void
+    public function down()
     {
-        Schema::dropIfExists('detail_barangs');
+        Schema::dropIfExists('detail_barang');
     }
-};
+}
