@@ -2,11 +2,12 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\PenempatanBarang;
-use App\Models\DetailBarang;
 use App\Models\Ruangan;
-use App\Models\Barang; // Model untuk jenis barang
+use App\Models\DetailBarang;
 use Illuminate\Http\Request;
+use App\Models\PenempatanBarang;
+use App\Models\TransaksiPemindahan;
+use App\Models\Barang; // Model untuk jenis barang
 
 class PenempatanBarangController extends Controller
 {
@@ -27,27 +28,65 @@ class PenempatanBarangController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'id_ruangan' => 'required|exists:ruangan,id',
+            'id_ruangan_asal' => 'required|exists:ruangan,id',
+            'id_ruangan_tujuan' => 'required|exists:ruangan,id',
             'tanggal_penempatan' => 'required|date',
             'pc_no' => 'required|array',
             'pc_no.*' => 'required|string|max:255',
             'id_jenis_barang' => 'required|array',
-            'id_jenis_barang.*' => 'required|exists:barang,id',
+            'id_jenis_barang.*' => 'required|array',
+            'id_jenis_barang.*.*' => 'required|exists:barang,id',
             'id_detail_barang' => 'required|array',
-            'id_detail_barang.*' => 'required|exists:detail_barang,id',
+            'id_detail_barang.*' => 'required|array',
+            'id_detail_barang.*.*' => 'required|exists:detail_barang,id',
         ]);
 
-        foreach ($request->id_detail_barang as $index => $id_detail_barang) {
-            PenempatanBarang::create([
-                'id_detail_barang' => $id_detail_barang,
-                'id_ruangan' => $request->id_ruangan,
-                'pc_no' => $request->pc_no[$index],
-                'tanggal_penempatan' => $request->tanggal_penempatan,
-            ]);
+        foreach ($request->pc_no as $pcIndex => $pc_no) {
+            foreach ($request->id_detail_barang[$pcIndex] as $detailIndex => $id_detail_barang) {
+                // Perbarui kondisi detail barang menjadi 'digunakan'
+                $detailBarang = DetailBarang::find($id_detail_barang);
+                $detailBarang->kondisi = 'digunakan';
+                $detailBarang->save();
+
+                // Perbarui jumlah barang yang tersedia dan digunakan
+                $barang = Barang::find($request->id_jenis_barang[$pcIndex][$detailIndex]);
+                $barang->barang_tersedia -= 1;
+                $barang->barang_digunakan += 1;
+                $barang->save();
+
+                // Buat penempatan barang baru
+                PenempatanBarang::create([
+                    'id_detail_barang' => $id_detail_barang,
+                    'id_ruangan' => $request->id_ruangan_tujuan,
+                    'pc_no' => $pc_no,
+                    'tanggal_penempatan' => $request->tanggal_penempatan,
+                ]);
+
+                // Buat transaksi pemindahan
+                TransaksiPemindahan::create([
+                    'id_detail_barang' => $id_detail_barang,
+                    'id_ruangan_asal' => $request->id_ruangan_asal,
+                    'id_ruangan_tujuan' => $request->id_ruangan_tujuan,
+                    'tanggal_pemindahan' => $request->tanggal_penempatan,
+                ]);
+
+                // Perbarui kondisi ruangan tujuan
+                $ruanganTujuan = Ruangan::find($request->id_ruangan_tujuan);
+                $ruanganTujuan->status_ruangan = 'digunakan';
+                $ruanganTujuan->save();
+
+                // Perbarui kondisi ruangan asal jika diperlukan
+                $ruanganAsal = Ruangan::find($request->id_ruangan_asal);
+                if ($ruanganAsal->id != $ruanganTujuan->id) {
+                    $ruanganAsal->status_ruangan = 'kosong';
+                    $ruanganAsal->save();
+                }
+            }
         }
 
         return redirect()->route('penempatan_barang.index')->with('success', 'Penempatan Barang created successfully.');
     }
+
 
     public function edit($id)
     {
@@ -69,12 +108,29 @@ class PenempatanBarangController extends Controller
         ]);
 
         $penempatanBarang = PenempatanBarang::findOrFail($id);
+
+        // Perbarui kondisi detail barang menjadi 'digunakan'
+        $detailBarang = DetailBarang::find($request->id_detail_barang);
+        $detailBarang->kondisi = 'digunakan';
+        $detailBarang->save();
+
+        // Perbarui jumlah barang yang tersedia dan digunakan
+        $barang = Barang::find($request->id_jenis_barang);
+        $barang->barang_tersedia -= 1;
+        $barang->barang_digunakan += 1;
+        $barang->save();
+
         $penempatanBarang->update([
             'id_detail_barang' => $request->id_detail_barang,
             'id_ruangan' => $request->id_ruangan,
             'pc_no' => $request->pc_no,
             'tanggal_penempatan' => $request->tanggal_penempatan,
         ]);
+
+        // Perbarui kondisi ruangan
+        $ruangan = Ruangan::find($request->id_ruangan);
+        $ruangan->status_ruangan = 'digunakan';
+        $ruangan->save();
 
         return redirect()->route('penempatan_barang.index')->with('success', 'Penempatan Barang updated successfully.');
     }

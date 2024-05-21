@@ -63,11 +63,11 @@
     </a>
 
     <!-- Custom scripts for all pages-->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script src="{{ asset('vendor/jquery/jquery.min.js') }}"></script>
     <script src="{{ asset('vendor/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
     <script src="{{ asset('vendor/jquery-easing/jquery.easing.min.js') }}"></script>
     <script src="{{ asset('js/sb-admin-2.min.js') }}"></script>
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
     <!-- DataTables JS -->
     <script src="{{ asset('vendor/datatables/jquery.dataTables.min.js') }}"></script>
@@ -75,54 +75,56 @@
 
     <script>
         function confirmDelete(id) {
-
+            // Swal.fire({
+            //     title: 'Apakah Anda yakin?',
+            //     text: "Data ini akan dihapus secara permanen!",
+            //     icon: 'warning',
+            //     showCancelButton: true,
+            //     confirmButtonColor: '#3085d6',
+            //     cancelButtonColor: '#d33',
+            //     confirmButtonText: 'Ya, hapus!'
+            // }).then((result) => {
+            //     if (result.isConfirmed) {
+            //         document.getElementById('delete-form-' + id).submit();
+            //     }
+            // });
 
             const swalWithBootstrapButtons = Swal.mixin({
                 customClass: {
-                    confirmButton: "btn btn-success",
-                    cancelButton: "btn btn-danger"
+                    confirmButton: 'btn btn-success mx-2',
+                    cancelButton: 'btn btn-danger mx-2'
                 },
                 buttonsStyling: false
             });
+
             swalWithBootstrapButtons.fire({
-                title: "Apakah Anda yakin?",
-                text: "Data ini akan dihapus secara permanen!",
-                icon: "warning",
+                title: 'Apakah Anda yakin?',
+                text: 'Data ini akan dihapus secara permanen!',
+                icon: 'warning',
                 showCancelButton: true,
-                confirmButtonText: "Yes, delete it!",
-                cancelButtonText: "No, cancel!",
+                confirmButtonText: 'Ya, hapus!',
+                cancelButtonText: 'Tidak, batalkan!',
                 reverseButtons: true
             }).then((result) => {
                 if (result.isConfirmed) {
-                    swalWithBootstrapButtons.fire({
-                    document.getElementById('delete-form-' + id).submit();
-                        title: "Deleted!",
-                        text: "Your file has been deleted.",
-                        icon: "success"
+                    // Tampilkan loader sebelum submit form
+                    Swal.fire({
+                        title: 'Menghapus data...',
+                        text: 'Harap tunggu...',
+                        allowOutsideClick: false,
+                        didOpen: () => {
+                            Swal.showLoading();
+                        }
                     });
-                } else if (
-                    /* Read more about handling dismissals below */
-                    result.dismiss === Swal.DismissReason.cancel
-                ) {
-                    swalWithBootstrapButtons.fire({
-                        title: "Cancelled",
-                        text: "Your imaginary file is safe :)",
-                        icon: "error"
-                    });
-                }
-            });
 
-            Swal.fire({
-                title: 'Apakah Anda yakin?',
-                text: "Data ini akan dihapus secara permanen!",
-                icon: 'warning',
-                showCancelButton: true,
-                confirmButtonColor: '#3085d6',
-                cancelButtonColor: '#d33',
-                confirmButtonText: 'Ya, hapus!'
-            }).then((result) => {
-                if (result.isConfirmed) {
+                    // Submit form
                     document.getElementById('delete-form-' + id).submit();
+                } else if (result.dismiss === Swal.DismissReason.cancel) {
+                    swalWithBootstrapButtons.fire(
+                        'Dibatalkan',
+                        'Data Anda aman :)',
+                        'error'
+                    );
                 }
             });
         }

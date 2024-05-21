@@ -15,8 +15,16 @@
                         <form action="{{ route('penempatan_barang.store') }}" method="POST" id="penempatanForm">
                             @csrf
                             <div class="form-group">
-                                <label for="id_ruangan">Ruangan</label>
-                                <select class="form-control" id="id_ruangan" name="id_ruangan" required>
+                                <label for="id_ruangan_asal">Ruangan Asal</label>
+                                <select class="form-control" id="id_ruangan_asal" name="id_ruangan_asal" required>
+                                    @foreach($ruangan as $room)
+                                        <option value="{{ $room->id }}">{{ $room->nama_ruangan }}</option>
+                                    @endforeach
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="id_ruangan_tujuan">Ruangan Tujuan</label>
+                                <select class="form-control" id="id_ruangan_tujuan" name="id_ruangan_tujuan" required>
                                     @foreach($ruangan as $room)
                                         <option value="{{ $room->id }}">{{ $room->nama_ruangan }}</option>
                                     @endforeach
@@ -48,7 +56,7 @@
                                                 <div class="form-row">
                                                     <div class="form-group col-md-6">
                                                         <label for="id_jenis_barang">Jenis Barang</label>
-                                                        <select class="form-control jenis-barang" name="id_jenis_barang[]" required>
+                                                        <select class="form-control jenis-barang" name="id_jenis_barang[0][]" required>
                                                             <option value="">Pilih Jenis Barang</option>
                                                             @foreach($jenisBarang as $jenis)
                                                                 <option value="{{ $jenis->id }}">{{ $jenis->nama_barang }}</option>
@@ -57,7 +65,7 @@
                                                     </div>
                                                     <div class="form-group col-md-6">
                                                         <label for="id_detail_barang">Detail Barang</label>
-                                                        <select class="form-control detail-barang" name="id_detail_barang[]" required disabled>
+                                                        <select class="form-control detail-barang" name="id_detail_barang[0][]" required disabled>
                                                             <option value="">Pilih Detail Barang</option>
                                                             @foreach($detailBarang as $detail)
                                                                 <option value="{{ $detail->id }}" data-jenis="{{ $detail->id_jenis_barang }}">
@@ -87,6 +95,8 @@
 @section('scripts')
     <script>
         $(document).ready(function() {
+            var pcIndex = 0;
+
             function updateDetailBarangSelect(container) {
                 container.find('.jenis-barang').on('change', function() {
                     var selectedJenis = $(this).val();
@@ -105,9 +115,12 @@
             }
 
             $('#add-pc').on('click', function() {
+                pcIndex++;
                 var newPcCard = $('.pc-card:first').clone();
                 newPcCard.find('select').val('');
                 newPcCard.find('.dynamic-barang-container').html('<div class="barang-set">' + $('.barang-set:first').html() + '</div>');
+                newPcCard.find('.jenis-barang').attr('name', 'id_jenis_barang[' + pcIndex + '][]');
+                newPcCard.find('.detail-barang').attr('name', 'id_detail_barang[' + pcIndex + '][]');
                 newPcCard.find('.remove-barang').removeClass('d-none');
                 $('#dynamic-container').append(newPcCard);
                 updateDetailBarangSelect(newPcCard);
