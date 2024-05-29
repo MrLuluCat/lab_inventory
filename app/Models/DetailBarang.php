@@ -16,7 +16,7 @@ class DetailBarang extends Model
         'id_jenis_barang',
         'merek',
         'kode_inventaris',
-        'kondisi',
+        'status',
         'lokasi',
     ];
 

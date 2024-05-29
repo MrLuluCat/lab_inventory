@@ -28,7 +28,6 @@
                             <tr>
                                 <th>No</th>
                                 <th>Nama Ruangan</th>
-                                <th>Status Ruangan</th>
                                 <th>Kapasitas</th>
                                 <th>Keterangan</th>
                                 <th>Aksi</th>
@@ -39,7 +38,6 @@
                                 <tr>
                                     <td>{{ $index + 1 }}</td>
                                     <td>{{ $item->nama_ruangan }}</td>
-                                    <td>{{ $item->status_ruangan }}</td>
                                     <td>{{ $item->kapasitas }}</td>
                                     <td>{{ $item->keterangan }}</td>
                                     <td>

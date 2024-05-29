@@ -41,6 +41,12 @@ class PenempatanBarangController extends Controller
             'id_detail_barang.*.*' => 'required|exists:detail_barang,id',
         ]);
 
+        $transaksiPemindahan = TransaksiPemindahan::create([
+            'id_ruangan_asal' => $request->id_ruangan_asal,
+            'id_ruangan_tujuan' => $request->id_ruangan_tujuan,
+            'tanggal_pemindahan' => $request->tanggal_penempatan,
+        ]);
+
         foreach ($request->pc_no as $pcIndex => $pc_no) {
             foreach ($request->id_detail_barang[$pcIndex] as $detailIndex => $id_detail_barang) {
                 // Perbarui kondisi detail barang menjadi 'digunakan'
@@ -56,18 +62,11 @@ class PenempatanBarangController extends Controller
 
                 // Buat penempatan barang baru
                 PenempatanBarang::create([
+                    'id_transaksi_pemindahan' => $transaksiPemindahan->id,
+                    'tanggal_penempatan' => $request->tanggal_penempatan,
                     'id_detail_barang' => $id_detail_barang,
                     'id_ruangan' => $request->id_ruangan_tujuan,
                     'pc_no' => $pc_no,
-                    'tanggal_penempatan' => $request->tanggal_penempatan,
-                ]);
-
-                // Buat transaksi pemindahan
-                TransaksiPemindahan::create([
-                    'id_detail_barang' => $id_detail_barang,
-                    'id_ruangan_asal' => $request->id_ruangan_asal,
-                    'id_ruangan_tujuan' => $request->id_ruangan_tujuan,
-                    'tanggal_pemindahan' => $request->tanggal_penempatan,
                 ]);
 
                 // Perbarui kondisi ruangan tujuan
@@ -86,6 +85,7 @@ class PenempatanBarangController extends Controller
 
         return redirect()->route('penempatan_barang.index')->with('success', 'Penempatan Barang created successfully.');
     }
+
 
 
     public function edit($id)

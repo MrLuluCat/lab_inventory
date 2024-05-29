@@ -19,13 +19,6 @@
                                 <input type="text" class="form-control" id="nama_ruangan" name="nama_ruangan" required>
                             </div>
                             <div class="form-group">
-                                <label for="status_ruangan">Status Ruangan</label>
-                                <select class="form-control" id="status_ruangan" name="status_ruangan" required>
-                                    <option value="aktif">Aktif</option>
-                                    <option value="tidak aktif">Tidak Aktif</option>
-                                </select>
-                            </div>
-                            <div class="form-group">
                                 <label for="kapasitas">Kapasitas</label>
                                 <input type="number" class="form-control" id="kapasitas" name="kapasitas" required>
                             </div>

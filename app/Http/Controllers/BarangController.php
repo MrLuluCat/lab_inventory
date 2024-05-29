@@ -20,23 +20,20 @@ class BarangController extends Controller
 
     public function store(Request $request)
     {
-        // $request->validate([
-        //     'nama_barang' => 'required|string|max:255',
-        //     'kategori_barang' => 'required|string|max:255',
-        //     'quantity' => 'required|integer|min:0',
-        //     'barang_tersedia' => 'required|integer|min:0',
-        //     'barang_digunakan' => 'required|integer|min:0',
-        //     'barang_tidak_digunakan' => 'required|integer|min:0',
-        // ]);
+        $request->validate([
+            'nama_barang' => 'required|string|max:255',
+            'kategori_barang' => 'required|string|max:255'
+        ]);
         
         $default_value = '0';
+
         Barang::create([
             'nama_barang' => $request->nama_barang,
             'kategori_barang' => $request->kategori_barang,
-            'quantity' => $default_value,
-            'barang_tersedia' => $default_value,
-            'barang_digunakan' => $default_value,
-            'barang_tidak_digunakan' => $default_value,
+            'total' => $default_value,
+            'stock' => $default_value,
+            'used' => $default_value,
+            'unused' => $default_value,
         ]);
 
         return redirect()->route('barang.index')->with('success', 'Barang created successfully.');
@@ -44,7 +41,7 @@ class BarangController extends Controller
 
      public function show()
      {
-        
+        //
      }
 
     public function edit($id)
@@ -55,23 +52,21 @@ class BarangController extends Controller
 
     public function update(Request $request, $id)
     {
-        // $request->validate([
-        //     'nama_barang' => 'required|string|max:255',
-        //     'kategori_barang' => 'required|string|max:255',
-        //     'quantity' => 'required|integer|min:0',
-        //     'barang_tersedia' => 'required|integer|min:0',
-        //     'barang_digunakan' => 'required|integer|min:0',
-        //     'barang_tidak_digunakan' => 'required|integer|min:0',
-        // ]);
+        $request->validate([
+            'nama_barang' => 'required|string|max:255',
+            'kategori_barang' => 'required|string|max:255'
+        ]);
+
+        $default_value = 0;
 
         $barang = Barang::findOrFail($id);
         $barang->update([
             'nama_barang' => $request->nama_barang,
             'kategori_barang' => $request->kategori_barang,
-            'quantity' => $request->quantity,
-            'barang_tersedia' => $request->barang_tersedia,
-            'barang_digunakan' => $request->barang_digunakan,
-            'barang_tidak_digunakan' => $request->barang_tidak_digunakan,
+            'total' => $default_value,
+            'stock' => $default_value,
+            'used' => $default_value,
+            'unused' => $default_value,
         ]);
 
         return redirect()->route('barang.index')->with('success', 'Barang updated successfully.');

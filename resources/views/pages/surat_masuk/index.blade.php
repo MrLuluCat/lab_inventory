@@ -17,7 +17,7 @@
                     <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
                         <thead>
                             <tr>
-                                <th>No</th>
+                                <th></th>
                                 <th>No Surat</th>
                                 <th>Tanggal Surat</th>
                                 <th>Dokumen</th>
@@ -25,9 +25,10 @@
                             </tr>
                         </thead>
                         <tbody>
-                            @foreach ($suratMasuk as $index => $surat)
-                                <tr>
-                                    <td>{{ $index + 1 }}</td>
+                            @foreach ($suratMasuk as $surat)
+                                <tr data-id="{{ $surat->id }}">
+                                    <td class="details-control"></td>
+
                                     <td>{{ $surat->no_surat }}</td>
                                     <td>{{ \Carbon\Carbon::parse($surat->tanggal_surat_masuk)->format('d/m/Y') }}</td>
                                     <td>
@@ -59,27 +60,129 @@
             </div>
         </div>
     </div>
-
-    <script>
-        function confirmDelete(id) {
-            Swal.fire({
-                title: 'Apakah Anda yakin?',
-                text: "Data ini akan dihapus secara permanen!",
-                icon: 'warning',
-                showCancelButton: true,
-                confirmButtonColor: '#3085d6',
-                cancelButtonColor: '#d33',
-                confirmButtonText: 'Ya, hapus!'
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    document.getElementById('delete-form-' + id).submit();
-                }
-            });
-        }
-    </script>
 @endsection
 
 @section('scripts')
-    {{-- <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script> --}}
+    <script>
+        $(document).ready(function() {
+            function format(id) {
+                var tableId = 'child-table-' + id;
+                return '<table id="' + tableId + '" class="display" style="width:100%">' +
+                '<thead>' +
+                    '<tr>' +
+                        '<th>Jenis Barang</th>' +
+                        '<th>Merek</th>' +
+                        '<th>Kode Inventaris</th>' +
+                        '<th>Status</th>' +
+                        '<th>Lokasi</th>' +
+                    '</tr>' +
+                '</thead>' +
+                '<tfoot>' +
+                    '<tr>' +
+                        '<th>Jenis Barang</th>' +
+                        '<th>Merek</th>' +
+                        '<th>Kode Inventaris</th>' +
+                        '<th>Status</th>' +
+                        '<th>Lokasi</th>' +
+                    '</tr>' +
+                '</tfoot>' +
+            '</table>';
+            }
 
+            var table = $('#dataTable').DataTable({
+                "columns": [{
+                        "className": 'details-control',
+                        "orderable": false,
+                        "data": null,
+                        "defaultContent": ''
+                    },
+                    {
+                        "data": "no_surat"
+                    },
+                    {
+                        "data": "tanggal_surat_masuk"
+                    },
+                    {
+                        "data": "document_path"
+                    },
+                    {
+                        "data": "aksi"
+                    }
+                ],
+                "order": [
+                    [1, 'asc']
+                ]
+            });
+
+            $('#dataTable tbody').on('click', 'td.details-control', function() {
+                var tr = $(this).closest('tr');
+                var row = table.row(tr);
+                var rowId = tr.data('id');
+
+                if (row.child.isShown()) {
+                    row.child.hide();
+                    tr.removeClass('shown');
+                } else {
+                    row.child(format(rowId)).show();
+                    tr.addClass('shown');
+
+                    var childTableId = 'child-table-' + rowId;
+                    $('#' + childTableId).DataTable({
+                        ajax: {
+                            url: '/api/child-barang/' + rowId,
+                            dataSrc: 'data',
+                            beforeSend: function() {
+                                Swal.fire({
+                                    title: 'Mengambil data...',
+                                    text: 'Harap tunggu...',
+                                    allowOutsideClick: false,
+                                    didOpen: () => {
+                                        Swal.showLoading();
+                                    }
+                                });
+                            },
+                            complete: function() {
+                                Swal.close();
+                            }
+                        },
+                        columns: [{
+                                "data": "barang.nama_barang"
+                            },
+                            {
+                                "data": "merek"
+                            },
+                            {
+                                "data": "kode_inventaris"
+                            },
+                            {
+                                "data": "status"
+                            },
+                            {
+                                "data": "ruangan.nama_ruangan",
+                            }
+                        ],
+                        initComplete: function() {
+                            this.api().columns().every(function() {
+                                var column = this;
+                                var select = $(
+                                        '<select><option value=""></option></select>')
+                                    .appendTo($(column.footer()).empty())
+                                    .on('change', function() {
+                                        var val = $.fn.dataTable.util.escapeRegex($(
+                                            this).val());
+                                        column.search(val ? '^' + val + '$' : '',
+                                            true, false).draw();
+                                    });
+
+                                column.data().unique().sort().each(function(d, j) {
+                                    select.append('<option value="' + d + '">' +
+                                        d + '</option>');
+                                });
+                            });
+                        }
+                    });
+                }
+            });
+        });
+    </script>
 @endsection

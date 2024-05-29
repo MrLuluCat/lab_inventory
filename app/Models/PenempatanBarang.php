@@ -12,11 +12,16 @@ class PenempatanBarang extends Model
     protected $table = 'penempatan_barang';
 
     protected $fillable = [
+        'id_transaksi_pemindahan',
         'id_detail_barang',
         'id_ruangan',
         'pc_no',
-        'tanggal_penempatan',
     ];
+
+    public function transaksiPemindahan()
+    {
+        return $this->belongsTo(TransaksiPemindahan::class, 'id_transaksi_pemindahan');
+    }
 
     public function detailBarang()
     {

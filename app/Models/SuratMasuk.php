@@ -19,6 +19,6 @@ class SuratMasuk extends Model
 
     public function detailBarangs()
     {
-        return $this->hasMany(DetailBarang::class, 'no_surat');
+        return $this->hasMany(DetailBarang::class, 'no_surat', 'id');
     }
 }

@@ -12,16 +12,10 @@ class TransaksiPemindahan extends Model
     protected $table = 'transaksi_pemindahan';
 
     protected $fillable = [
-        'id_detail_barang',
         'id_ruangan_asal',
         'id_ruangan_tujuan',
         'tanggal_pemindahan',
     ];
-
-    public function detailBarang()
-    {
-        return $this->belongsTo(DetailBarang::class, 'id_detail_barang');
-    }
 
     public function ruanganAsal()
     {
@@ -32,4 +26,10 @@ class TransaksiPemindahan extends Model
     {
         return $this->belongsTo(Ruangan::class, 'id_ruangan_tujuan');
     }
+
+    public function penempatanBarangs()
+    {
+        return $this->hasMany(PenempatanBarang::class, 'id_transaksi_pemindahan');
+    }
 }
+

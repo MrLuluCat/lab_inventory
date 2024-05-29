@@ -22,14 +22,12 @@ class RuanganController extends Controller
     {
         $request->validate([
             'nama_ruangan' => 'required|string|max:255',
-            'status_ruangan' => 'required|string|max:255',
             'kapasitas' => 'required|integer|min:0',
             'keterangan' => 'required|string|max:255',
         ]);
 
         Ruangan::create([
             'nama_ruangan' => $request->nama_ruangan,
-            'status_ruangan' => $request->status_ruangan,
             'kapasitas' => $request->kapasitas,
             'keterangan' => $request->keterangan,
         ]);
@@ -47,7 +45,6 @@ class RuanganController extends Controller
     {
         $request->validate([
             'nama_ruangan' => 'required|string|max:255',
-            'status_ruangan' => 'required|string|max:255',
             'kapasitas' => 'required|integer|min:0',
             'keterangan' => 'required|string|max:255',
         ]);
@@ -55,7 +52,6 @@ class RuanganController extends Controller
         $ruangan = Ruangan::findOrFail($id);
         $ruangan->update([
             'nama_ruangan' => $request->nama_ruangan,
-            'status_ruangan' => $request->status_ruangan,
             'kapasitas' => $request->kapasitas,
             'keterangan' => $request->keterangan,
         ]);

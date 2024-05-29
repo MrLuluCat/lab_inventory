@@ -3,23 +3,16 @@
 namespace App\Http\Controllers;
 
 use App\Models\SuratMasuk;
+use App\Models\DetailBarang;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 
 class SuratMasukController extends Controller
 {
-    public function index(Request $request)
+    public function index()
     {
-        $query = SuratMasuk::query();
-
-        if ($request->filled('search')) {
-            $search = $request->search;
-            $query->where('no_surat', 'like', '%' . $search . '%')
-                ->orWhere('tanggal_surat_masuk', 'like', '%' . $search . '%');
-        }
-
-        $suratMasuk = $query->get();
-
+        $suratMasuk = SuratMasuk::with(['detailBarangs.barang', 'detailBarangs.ruangan'])->get();
         return view('pages.surat_masuk.index', compact('suratMasuk'));
     }
 
@@ -44,7 +37,6 @@ class SuratMasukController extends Controller
         ]);
 
         return redirect()->to('surat_masuk')->withSuccess('Surat Masuk created successfully.');
-
     }
 
     public function edit(SuratMasuk $suratMasuk)
@@ -75,6 +67,20 @@ class SuratMasukController extends Controller
         $suratMasuk->delete();
 
         return redirect()->to('surat_masuk')->withSuccess('Surat Masuk deleted successfully.');
+    }
 
+    public function getDetailBarangData($id)
+    {
+        $suratMasuk = SuratMasuk::find($id);
+
+        if ($suratMasuk) {
+            $detailBarang = DetailBarang::with('barang', 'ruangan')
+                ->where('no_surat', $suratMasuk->id)
+                ->get();
+
+            return response()->json(['data' => $detailBarang]);
+        }
+
+        return response()->json(['data' => []]);
     }
 }

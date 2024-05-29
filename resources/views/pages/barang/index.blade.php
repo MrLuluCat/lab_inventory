@@ -19,11 +19,11 @@
                                 <th>No</th>
                                 <th>Nama Barang</th>
                                 <th>Kategori Barang</th>
-                                <th>Quantity</th>
-                                <th>Barang Tersedia</th>
-                                <th>Barang Digunakan</th>
-                                <th>Barang Tidak Digunakan</th>
-                                <th>Aksi</th>
+                                <th>Total</th>
+                                <th>Stock</th>
+                                <th>Di Gunakan</th>
+                                <th>Tidak Digunakan</th>
+                                <th>Action</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -32,10 +32,10 @@
                                     <td>{{ $index + 1 }}</td>
                                     <td>{{ $item->nama_barang }}</td>
                                     <td>{{ $item->kategori_barang }}</td>
-                                    <td>{{ $item->quantity }}</td>
-                                    <td>{{ $item->barang_tersedia }}</td>
-                                    <td>{{ $item->barang_digunakan }}</td>
-                                    <td>{{ $item->barang_tidak_digunakan }}</td>
+                                    <td>{{ $item->total }}</td>
+                                    <td>{{ $item->stock }}</td>
+                                    <td>{{ $item->used }}</td>
+                                    <td>{{ $item->unused }}</td>
                                     <td>
                                         <a href="{{ route('barang.edit', $item->id) }}" class="btn btn-warning btn-sm">Edit</a>
                                         <button type="button" class="btn btn-danger btn-sm" onclick="confirmDelete({{ $item->id }})">Hapus</button>
@@ -53,7 +53,7 @@
         </div>
     </div>
 
-    <script>
+    {{-- <script>
         function confirmDelete(id) {
             Swal.fire({
                 title: 'Apakah Anda yakin?',
@@ -69,5 +69,5 @@
                 }
             });
         }
-    </script>
+    </script> --}}
 @endsection

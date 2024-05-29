@@ -10,6 +10,7 @@
             @csrf
             <div class="card mb-4 shadow-sm">
                 <div class="card-body">
+
                     <div class="form-group">
                         <label for="no_surat">No Surat</label>
                         <select class="form-control" id="no_surat" name="no_surat" required>
@@ -18,9 +19,11 @@
                             @endforeach
                         </select>
                     </div>
+
                     <div class="form-group">
                         <label for="id_jenis_barang">Jenis Barang</label>
                     </div>
+
                     <div class="form-group checkbox-container">
                         @foreach ($barangs as $barang)
                             <div class="form-check form-check-inline">
@@ -36,10 +39,6 @@
                     <div id="barangContainer"></div>
 
                     <div class="form-group">
-                        <label for="kondisi">Kondisi</label>
-                        <input type="text" class="form-control" id="kondisi" name="kondisi" required>
-                    </div>
-                    <div class="form-group">
                         <label for="lokasi">Lokasi</label>
                         <select class="form-control" id="lokasi" name="lokasi" required>
                             @foreach ($ruangans as $ruangan)
@@ -47,12 +46,17 @@
                             @endforeach
                         </select>
                     </div>
+
                 </div>
             </div>
             <button type="submit" class="btn btn-primary mt-4">Submit</button>
         </form>
     </div>
 
+
+@endsection
+
+@section('scripts')
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             const form = document.getElementById('barangForm');
@@ -80,7 +84,7 @@
                         <input type="hidden" name="id_jenis_barang[${value}]" value="${value}">
                         <div class="form-row">
                             <div class="col-md-3 mb-3">
-                                <input type="number" class="form-control" name="quantity[${value}]" placeholder="Kuantitas" required>
+                                <input type="number" class="form-control" name="total[${value}]" placeholder="Kuantitas" required>
                                 <div class="invalid-feedback">Harap masukkan kuantitas.</div>
                             </div>
                         </div>
@@ -90,8 +94,8 @@
 
                 barangContainer.appendChild(barangDiv);
 
-                const quantityInput = barangDiv.querySelector('input[name="quantity[' + value + ']"]');
-                quantityInput.addEventListener('input', function() {
+                const totalInput = barangDiv.querySelector('input[name="total[' + value + ']"]');
+                totalInput.addEventListener('input', function() {
                     updateKodeMerek(barangDiv, label);
                 });
             }
@@ -104,13 +108,13 @@
             }
 
             function updateKodeMerek(barangDiv, label) {
-                const quantity = barangDiv.querySelector('input[name="quantity[' + barangDiv.getAttribute(
+                const total = barangDiv.querySelector('input[name="total[' + barangDiv.getAttribute(
                     'data-barang') + ']"]').value;
                 let kodeMerekContainer = barangDiv.querySelector('.kode-merek-container');
                 kodeMerekContainer.innerHTML = '';
 
-                if (quantity) {
-                    for (let i = 0; i < quantity; i++) {
+                if (total) {
+                    for (let i = 0; i < total; i++) {
                         const kodeMerekRow = document.createElement('div');
                         kodeMerekRow.classList.add('form-row', 'mt-2');
 

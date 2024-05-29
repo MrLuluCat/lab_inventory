@@ -16,6 +16,7 @@ Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard
 
 Route::resource('barang', BarangController::class);
 Route::resource('detail_barang', DetailBarangController::class);
+
 // Route::get('/api/child-data/{id}', function ($id) {
 //     // Fetch child data based on the provided ID
 //     // Example data
@@ -27,7 +28,10 @@ Route::resource('detail_barang', DetailBarangController::class);
 
 //     return response()->json(['data' => $data]);
 // });
+
 Route::get('/api/child-data/{id}',[DetailBarangController::class, 'getSuratMasukData']);
+
+Route::get('/api/child-barang/{id}', [SuratMasukController::class, 'getDetailBarangData']);
 
 Route::resource('surat_masuk', SuratMasukController::class);
 Route::resource('ruangan', RuanganController::class);

@@ -22,7 +22,7 @@
                             <th>Jenis Barang</th>
                             <th>Kode Inventaris</th>
                             <th>Merek</th>
-                            <th>Kondisi</th>
+                            <th>Status</th>
                             <th>Lokasi</th>
                             <th>No Surat</th>
                             <th>Aksi</th>
@@ -35,7 +35,7 @@
                                 <td>{{ $barang->barang->nama_barang }}</td>
                                 <td>{{ $barang->kode_inventaris }}</td>
                                 <td>{{ $barang->merek }}</td>
-                                <td>{{ $barang->kondisi }}</td>
+                                <td>{{ $barang->status }}</td>
                                 <td>{{ $barang->ruangan->nama_ruangan }}</td>
                                 <td>{{ $barang->suratMasuk->no_surat }}</td>
                                 <td>
@@ -89,7 +89,7 @@
                 { "data": "jenis_barang" },
                 { "data": "kode_inventaris" },
                 { "data": "merek" },
-                { "data": "kondisi" },
+                { "data": "status" },
                 { "data": "ruangan.nama_ruangan" },
                 { "data": "suratMasuk.no_surat" },
                 { "data": "aksi" }
@@ -111,11 +111,37 @@
 
                 var childTableId = 'child-table-' + rowId;
                 $('#' + childTableId).DataTable({
-                    ajax: '/api/child-data/' + rowId,
+                    ajax: {
+                        url: '/api/child-data/' + rowId,
+                        dataSrc: 'data',
+                        beforeSend: function() {
+                            Swal.fire({
+                                title: 'Mengambil data...',
+                                text: 'Harap tunggu...',
+                                allowOutsideClick: false,
+                                didOpen: () => {
+                                    Swal.showLoading();
+                                }
+                            });
+                        },
+                        complete: function() {
+                            Swal.close();
+                        }
+                    },
                     columns: [
                         { "data": "no_surat" },
                         { "data": "tanggal_surat_masuk" },
-                        { "data": "document_path" }
+                        { 
+                            "data": "document_path",
+                            "render": function(data, type, row) {
+                                var fileExtension = data.split('.').pop().toLowerCase();
+                                if (['png', 'jpg', 'jpeg'].includes(fileExtension)) {
+                                    return '<a href="{{ asset('storage') }}/' + data + '" target="_blank">Lihat Gambar</a>';
+                                } else {
+                                    return '<a href="{{ asset('storage') }}/' + data + '" target="_blank">Lihat Dokumen</a>';
+                                }
+                            }
+                        }
                     ],
                     initComplete: function () {
                         this.api().columns().every(function () {

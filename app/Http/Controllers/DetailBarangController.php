@@ -44,20 +44,20 @@ class DetailBarangController extends Controller
         //     'lokasi' => 'required|exists:ruangan,id',
         // ]);
 
-        foreach ($request->quantity as $barang_id => $quantity) {
+        foreach ($request->total as $barang_id => $total) {
             
             $barang = Barang::findOrFail($barang_id);
-            $barang->quantity += $quantity;
-            $barang->barang_tersedia += $quantity;
+            $barang->total += $total;
+            $barang->stock += $total;
             $barang->save();
 
-            for ($i = 0; $i < $quantity; $i++) {
+            for ($i = 0; $i < $total; $i++) {
                 DetailBarang::create([
                     'no_surat' => $request->no_surat,
                     'id_jenis_barang' => $barang_id,
                     'merek' => $request->merek[$barang_id][$i],
                     'kode_inventaris' => $request->kode_inventaris[$barang_id][$i],
-                    'kondisi' => $request->kondisi,
+                    'status' => 'in storage',
                     'lokasi' => $request->lokasi,
                 ]);
             }
@@ -118,5 +118,6 @@ class DetailBarangController extends Controller
         // Jika tidak ditemukan, kembalikan response kosong
         return response()->json(['data' => []]);
     }
+
 
 }
