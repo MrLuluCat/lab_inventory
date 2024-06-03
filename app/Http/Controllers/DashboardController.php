@@ -2,8 +2,12 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Barang;
+use App\Models\Ruangan;
+use App\Models\SuratMasuk;
 use App\Models\DetailBarang;
 use Illuminate\Http\Request;
+use App\Models\PenempatanBarang;
 
 class DashboardController extends Controller
 {
@@ -12,8 +16,24 @@ class DashboardController extends Controller
      */
     public function index()
     {
+        $surat_masuk_count = SuratMasuk::count();
+        $barang_count = Barang::count();
         $detail_barang_count = DetailBarang::count();
-        return view('pages.dashboard', compact('detail_barang_count'));
+        $penempatan_barang_count = PenempatanBarang::count();
+        $ruangan_count = Ruangan::count();
+
+        $barangs = Barang::all();
+        $ruangans = Ruangan::all();
+
+        return view('pages.dashboard', compact(
+            'surat_masuk_count',
+            'barang_count',
+            'detail_barang_count',
+            'penempatan_barang_count',
+            'ruangan_count',
+            'barangs',
+            'ruangans'
+        ));
     }
 
     /**
