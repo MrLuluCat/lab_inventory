@@ -22,7 +22,7 @@ Route::resource('barang', BarangController::class);
 
 // Detail Barang Controller
 Route::resource('detail_barang', DetailBarangController::class);
-Route::get('/api/child-data/{id}',[DetailBarangController::class, 'getSuratMasukData']);
+Route::get('/api/child-surat/{id}',[DetailBarangController::class, 'getSuratMasukData']);
 
 // Surat Masuk Controller
 Route::resource('surat_masuk', SuratMasukController::class);
@@ -30,6 +30,10 @@ Route::get('/api/child-barang/{id}', [SuratMasukController::class, 'getDetailBar
 
 // Ruangan Controller
 Route::resource('ruangan', RuanganController::class);
+Route::get('/api/child-ruangan/{ruangan}', [RuanganController::class, 'getPenempatanByRuangan']);
+Route::get('/api/child-detail/{ruanganId}/{pcNumber}', [RuanganController::class, 'getDetailBarang']);
 
 // Penempatan Barang Controller
 Route::resource('penempatan_barang', PenempatanBarangController::class);
+Route::get('/api/child-penempatan/{id}', [PenempatanBarangController::class, 'getPenempatanBarangByTransaksi']);
+

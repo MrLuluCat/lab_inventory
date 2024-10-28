@@ -14,8 +14,7 @@ class PenempatanBarang extends Model
     protected $fillable = [
         'id_transaksi_pemindahan',
         'id_detail_barang',
-        'id_ruangan',
-        'pc_no',
+        'pc_number'
     ];
 
     public function transaksiPemindahan()

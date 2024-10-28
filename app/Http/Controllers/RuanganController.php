@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Ruangan;
 use Illuminate\Http\Request;
+use App\Models\PenempatanBarang;
 
 class RuanganController extends Controller
 {
@@ -66,4 +67,31 @@ class RuanganController extends Controller
 
         return redirect()->route('ruangan.index')->with('success', 'Ruangan deleted successfully.');
     }
+
+    public function getPenempatanByRuangan($ruanganId)
+    {
+        // Ambil data penempatan berdasarkan ruangan tujuan di transaksi pemindahan
+        $penempatanBarang = PenempatanBarang::whereHas('transaksiPemindahan', function ($query) use ($ruanganId) {
+            $query->where('id_ruangan_tujuan', $ruanganId);
+        })
+            ->groupBy('pc_number')
+            ->select('pc_number')
+            ->get();
+
+        return response()->json(['data' => $penempatanBarang]);
+    }
+
+    public function getDetailBarang($ruanganId, $pcNumber)
+    {
+        // Ambil data barang yang ditempatkan di ruangan dan PC tertentu
+        $penempatanBarang = PenempatanBarang::with(['detailBarang.barang'])
+            ->where('pc_number', $pcNumber)
+            ->whereHas('detailBarang', function ($query) use ($ruanganId) {
+                $query->where('lokasi', $ruanganId);
+            })
+            ->get();
+
+        return response()->json(['data' => $penempatanBarang]);
+    }
+
 }

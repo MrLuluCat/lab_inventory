@@ -165,7 +165,7 @@
                             this.api().columns().every(function() {
                                 var column = this;
                                 var select = $(
-                                        '<select><option value=""></option></select>')
+                                        '<select class="custom-select"><option value=""></option></select>')
                                     .appendTo($(column.footer()).empty())
                                     .on('change', function() {
                                         var val = $.fn.dataTable.util.escapeRegex($(

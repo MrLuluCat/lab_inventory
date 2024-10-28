@@ -11,21 +11,11 @@ class Ruangan extends Model
 
     protected $table = 'ruangan';
 
-    protected $fillable = [
-        'nama_ruangan',
-        'status_ruangan',
-        'kapasitas',
-        'keterangan',
-    ];
+    protected $fillable = ['nama_ruangan', 'kapasitas', 'keterangan'];
 
-    public function detailBarangs()
+    public function detailBarang()
     {
         return $this->hasMany(DetailBarang::class, 'lokasi');
-    }
-
-    public function penempatanBarangs()
-    {
-        return $this->hasMany(PenempatanBarang::class, 'id_ruangan');
     }
 
     public function transaksiPemindahanAsal()
@@ -38,3 +28,4 @@ class Ruangan extends Model
         return $this->hasMany(TransaksiPemindahan::class, 'id_ruangan_tujuan');
     }
 }
+ 

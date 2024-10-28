@@ -21,11 +21,11 @@ class DetailBarangController extends Controller
 
     public function create()
     {
-        $barangs = Barang::all();
-        $suratMasuks = SuratMasuk::all();
-        $ruangans = Ruangan::all();
+        $barang = Barang::all();
+        $suratMasuk = SuratMasuk::all();
+        $ruangan = Ruangan::all();
 
-        return view('pages.detail_barang.create', compact('barangs', 'suratMasuks', 'ruangans'));
+        return view('pages.detail_barang.create', compact('barang', 'suratMasuk', 'ruangan'));
     }
 
 
@@ -103,19 +103,15 @@ class DetailBarangController extends Controller
 
     public function getSuratMasukData($id)
     {
-        // Ambil data Detail Barang berdasarkan id
         $detailBarang = DetailBarang::find($id);
 
-        // Cek apakah data Detail Barang ditemukan
         if ($detailBarang) {
-            // Ambil data Surat Masuk berdasarkan no_surat dari Detail Barang
+
             $suratMasuk = SuratMasuk::where('id', $detailBarang->no_surat)->get();
 
-            // Kembalikan response dalam format JSON untuk DataTables
             return response()->json(['data' => $suratMasuk]);
         }
 
-        // Jika tidak ditemukan, kembalikan response kosong
         return response()->json(['data' => []]);
     }
 

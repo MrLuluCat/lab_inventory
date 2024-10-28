@@ -15,6 +15,7 @@ class TransaksiPemindahan extends Model
         'id_ruangan_asal',
         'id_ruangan_tujuan',
         'tanggal_pemindahan',
+        'jumlah_item'
     ];
 
     public function ruanganAsal()
@@ -27,9 +28,8 @@ class TransaksiPemindahan extends Model
         return $this->belongsTo(Ruangan::class, 'id_ruangan_tujuan');
     }
 
-    public function penempatanBarangs()
+    public function penempatanBarang()
     {
         return $this->hasMany(PenempatanBarang::class, 'id_transaksi_pemindahan');
     }
 }
-

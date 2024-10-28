@@ -14,8 +14,8 @@
                     <div class="form-group">
                         <label for="no_surat">No Surat</label>
                         <select class="form-control" id="no_surat" name="no_surat" required>
-                            @foreach ($suratMasuks as $suratMasuk)
-                                <option value="{{ $suratMasuk->id }}">{{ $suratMasuk->no_surat }}</option>
+                            @foreach ($suratMasuk as $surat)
+                                <option value="{{ $surat->id }}">{{ $surat->no_surat }}</option>
                             @endforeach
                         </select>
                     </div>
@@ -25,12 +25,12 @@
                     </div>
 
                     <div class="form-group checkbox-container">
-                        @foreach ($barangs as $barang)
+                        @foreach ($barang as $barang => $item)
                             <div class="form-check form-check-inline">
-                                <input class="form-check-input" type="checkbox" value="{{ $barang->id }}"
-                                    id="barang{{ $barang->id }}">
-                                <label class="form-check-label" for="barang{{ $barang->id }}">
-                                    <i class="fa fa-check"></i> {{ $barang->nama_barang }}
+                                <input class="form-check-input" type="checkbox" value="{{ $item->id }}"
+                                    id="barang{{ $item->id }}">
+                                <label class="form-check-label" for="barang{{ $item->id }}">
+                                    <i class="fa fa-check"></i> {{ $item->nama_barang }}
                                 </label>
                             </div>
                         @endforeach
@@ -41,8 +41,8 @@
                     <div class="form-group">
                         <label for="lokasi">Lokasi</label>
                         <select class="form-control" id="lokasi" name="lokasi" required>
-                            @foreach ($ruangans as $ruangan)
-                                <option value="{{ $ruangan->id }}">{{ $ruangan->nama_ruangan }}</option>
+                            @foreach ($ruangan as $room)
+                                <option value="{{ $room->id }}">{{ $room->nama_ruangan }}</option>
                             @endforeach
                         </select>
                     </div>

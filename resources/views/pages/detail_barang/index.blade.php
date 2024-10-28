@@ -68,13 +68,6 @@
                         '<th>Document Path</th>' +
                     '</tr>' +
                 '</thead>' +
-                '<tfoot>' +
-                    '<tr>' +
-                        '<th>No Surat</th>' +
-                        '<th>Tanggal Surat Masuk</th>' +
-                        '<th>Document Path</th>' +
-                    '</tr>' +
-                '</tfoot>' +
             '</table>';
         }
 
@@ -112,7 +105,7 @@
                 var childTableId = 'child-table-' + rowId;
                 $('#' + childTableId).DataTable({
                     ajax: {
-                        url: '/api/child-data/' + rowId,
+                        url: '/api/child-surat/' + rowId,
                         dataSrc: 'data',
                         beforeSend: function() {
                             Swal.fire({
@@ -131,8 +124,7 @@
                     columns: [
                         { "data": "no_surat" },
                         { "data": "tanggal_surat_masuk" },
-                        { 
-                            "data": "document_path",
+                        { "data": "document_path",
                             "render": function(data, type, row) {
                                 var fileExtension = data.split('.').pop().toLowerCase();
                                 if (['png', 'jpg', 'jpeg'].includes(fileExtension)) {
@@ -143,21 +135,7 @@
                             }
                         }
                     ],
-                    initComplete: function () {
-                        this.api().columns().every(function () {
-                            var column = this;
-                            var select = $('<select><option value=""></option></select>')
-                                .appendTo($(column.footer()).empty())
-                                .on('change', function () {
-                                    var val = $.fn.dataTable.util.escapeRegex($(this).val());
-                                    column.search(val ? '^' + val + '$' : '', true, false).draw();
-                                });
-
-                            column.data().unique().sort().each(function (d, j) {
-                                select.append('<option value="' + d + '">' + d + '</option>');
-                            });
-                        });
-                    }
+                    
                 });
             }
         });
